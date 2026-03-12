@@ -69,10 +69,33 @@ npm install
 
 ### 3️⃣ Create `.env` file
 
+Copy template:
+
+```bash
+cp .env.example .env
+```
+
+On Windows (Command Prompt):
+
+```bat
+copy .env.example .env
+```
+
+Then update values as needed:
+
 ```env
 PORT=3000
-DB_PASSWORD=your_postgres_password
 JWT_SECRET=your_secret_key
+
+# Option A (recommended for deployment platforms like Render/Railway):
+DATABASE_URL=postgres://user:password@host:5432/task_management
+
+# Option B (local PostgreSQL / discrete variables):
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=your_postgres_password
+DB_NAME=task_management
 ```
 
 ### 4️⃣ Run database (PostgreSQL)
@@ -83,7 +106,11 @@ Create database:
 CREATE DATABASE task_management;
 ```
 
-Create tables (users & tasks).
+Import tables:
+
+```bash
+psql -d task_management -f database/schema.sql
+```
 
 ### 5️⃣ Start the server
 
@@ -95,6 +122,26 @@ Server runs on:
 
 ```
 http://localhost:3000
+```
+
+---
+
+## ☁️ Deployment (Render/Railway)
+
+Render Blueprint is included via `render.yaml` for one-click service setup.
+
+1. Push this repository to GitHub.
+2. Create a hosted PostgreSQL database.
+3. Create a Web Service from this repo.
+4. Set start command to `npm start`.
+5. Add environment variables:
+   - `NODE_ENV=production`
+   - `JWT_SECRET=<strong-secret>`
+   - `DATABASE_URL=<your-hosted-postgres-url>`
+6. Deploy and verify health check:
+
+```text
+GET /health
 ```
 
 ---

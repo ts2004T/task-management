@@ -1,6 +1,8 @@
 import express from "express";
 import authRoutes from "./routes/auth.routes.js";
 import taskRoutes from "./routes/task.routes.js";
+import AppError from "./utils/AppError.js";
+import { globalErrorHandler } from "./middlewares/error.middleware.js";
 
 const app = express();
 
@@ -13,9 +15,6 @@ app.get("/health", (req, res) => {
      res.status(200).json({ status: "OK" });
 });
 
-export default app;
-import { globalErrorHandler } from "./middlewares/error.middleware.js";
-
 // 404 handler
 app.all("*", (req, res, next) => {
      next(new AppError(`Cannot find ${req.originalUrl}`, 404));
@@ -23,3 +22,5 @@ app.all("*", (req, res, next) => {
 
 // Global error handler (must be last)
 app.use(globalErrorHandler);
+
+export default app;

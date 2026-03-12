@@ -1,6 +1,7 @@
 import pool from "../config/db.js";
 import { hashPassword, comparePassword } from "../utils/password.util.js";
 import { generateToken } from "../utils/jwt.util.js";
+import AppError from "../utils/AppError.js";
 
 export const registerUserService = async ({ name, email, password }) => {
      const existingUser = await pool.query(
@@ -10,9 +11,7 @@ export const registerUserService = async ({ name, email, password }) => {
 
 
      if (existingUser.rows.length > 0) {
-
-          throw new Error("User already exists");
-
+          throw new AppError("User already exists", 409);
      }
 
 
@@ -41,7 +40,7 @@ export const loginUserService = async ({ email, password }) => {
 );
 
 if (result.rows.length === 0) {
-     throw new Error("Invalid credentials");
+     throw new AppError("Invalid credentials", 401);
 }
 
 const user = result.rows[0];
@@ -49,7 +48,7 @@ const user = result.rows[0];
 const isMatch = await comparePassword(password, user.password);
 
 if (!isMatch) {
-     throw new Error("Invalid credentials");
+     throw new AppError("Invalid credentials", 401);
 }
 
 const token = generateToken({

@@ -1,4 +1,5 @@
 import pool from "../config/db.js";
+import AppError from "../utils/AppError.js";
 
 export const createTaskService = async ({ title, description, userId }) => {
 
@@ -85,9 +86,7 @@ export const updateTaskService = async (taskId, userId, updates) => {
      ]
 );
 if (result.rows.length === 0) {
-
-     throw new Error("Task not found or unauthorized");
-
+     throw new AppError("Task not found or unauthorized", 404);
 }
 
 
@@ -105,7 +104,7 @@ export const deleteTaskService = async (taskId, userId) => {
 
 );
 if (result.rowCount === 0) {
-     throw new Error("Task not found or unauthorized");
+     throw new AppError("Task not found or unauthorized", 404);
 
 }
 };
