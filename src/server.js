@@ -5,7 +5,9 @@ import pool from "./config/db.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
-
+app.listen(PORT, () => {
+     console.log(`Server running on port ${PORT}`);
+});
 const startServer = async () => {
      try {
           await pool.query("SELECT 1");
